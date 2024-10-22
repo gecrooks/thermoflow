@@ -26,8 +26,8 @@ keywords = []
 classifiers = [ 
   "Development Status :: 3 - Alpha",
   "Topic :: Software Development :: Build Tools",
-  "Topic :: Scientific/Engineering
-  "Topic :: Software Development :: Libraries
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries",
   "License :: OSI Approved :: Apache Software License",
 ]
 
