@@ -41,7 +41,7 @@ jobs:
         python -m ruff check .
     - name: Typecheck with mypy
       run: |
-        python -m mypy
+        python -m mypy .
     - name: Build documentation with sphinx
       run: |
         (cd docsrc; make html)

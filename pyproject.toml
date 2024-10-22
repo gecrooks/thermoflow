@@ -98,7 +98,7 @@ exclude_lines = [
 # https://mypy.readthedocs.io/en/stable/config_file.html
 
 # [tools.mypy]
-files = "thermoflow"
+
 
 # Suppresses error about unresolved imports (i.e. from numpy)
 ignore_missing_imports = true
