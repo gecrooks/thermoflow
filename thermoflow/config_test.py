@@ -7,27 +7,27 @@ import glob
 import io
 import subprocess
 
-import disorder
+import thermoflow
 
 
 def test_version() -> None:
-    assert disorder.__version__
+    assert thermoflow.__version__
 
 
 def test_about() -> None:
     out = io.StringIO()
-    disorder.about(out)
+    thermoflow.about(out)
     print(out)
 
 
 def test_about_main() -> None:
-    rval = subprocess.call(["python", "-m", "disorder.about"])
+    rval = subprocess.call(["python", "-m", "thermoflow.about"])
     assert rval == 0
 
 
 def test_copyright() -> None:
     """Check that source code files contain a copyright line"""
-    for fname in glob.glob("disorder/**/*.py", recursive=True):
+    for fname in glob.glob("thermoflow/**/*.py", recursive=True):
         print("Checking " + fname + " for copyright header")
 
         with open(fname) as f:

@@ -9,7 +9,7 @@ import pytest
 from numpy.random import normal
 from scipy.special import expit
 
-from disorder import (
+from thermoflow import (
     fenergy_bar,
     fenergy_bayesian,
     fenergy_logmeanexp,
@@ -18,7 +18,7 @@ from disorder import (
     fenergy_symmetric_bidirectional,
     fenergy_symmetric_nnznm,
 )
-from disorder.fenergy import _logexpit
+from thermoflow.fenergy import _logexpit
 
 
 def test_fenergy_logmeanexp() -> None:
