@@ -115,5 +115,3 @@ def logexpit(a: Array) -> Array:
         [a < 0, a >= 0],
         [lambda x: x + jnp.log(expit(-x)), lambda x: jnp.log(expit(x))],
     )
-
-

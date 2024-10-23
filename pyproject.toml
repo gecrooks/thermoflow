@@ -43,6 +43,7 @@ dev = [
     "sphinx",
     "ruff",
     "pre-commit",
+    "pymbar", # Used in testing
 ]
 
 
