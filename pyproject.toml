@@ -11,6 +11,7 @@ name = "thermoflow"
 dynamic = ["version"]
 dependencies = [
     "jax",
+    "jaxopt",
 ]
 requires-python =">=3.12"
 
