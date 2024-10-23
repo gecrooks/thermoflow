@@ -4,10 +4,8 @@
 # the LICENSE.txt file in the root directory of this source tree.
 
 
-import numpy as np
+import jax.numpy as jnp
 import pytest
-from numpy.random import normal
-from scipy.special import expit
 
 from thermoflow import (
     fenergy_bar,
@@ -18,62 +16,60 @@ from thermoflow import (
     fenergy_symmetric_bidirectional,
     fenergy_symmetric_nnznm,
 )
-from thermoflow.fenergy import _logexpit
 
 
 def test_fenergy_logmeanexp() -> None:
-    assert np.isclose(fenergy_logmeanexp(work_f), 9.462820605969167)
-    assert np.isclose(fenergy_logmeanexp(work_r), -8.992876786373467)
+    assert jnp.isclose(fenergy_logmeanexp(work_f), 9.462820605969167)
+    assert jnp.isclose(fenergy_logmeanexp(work_r), -8.992876786373467)
 
 
 def test_fenergy_logmeanexp_gaussian() -> None:
-    assert np.isclose(fenergy_logmeanexp_gaussian(work_f), 8.687926143699123)
+    assert jnp.isclose(fenergy_logmeanexp_gaussian(work_f), 8.687926143699123)
 
 
 def test_fenergy_bar() -> None:
-    assert np.allclose(
-        fenergy_bar(work_f, work_r), (10.126372790165997, 0.39715725693786963)
-    )
-    assert np.allclose(
-        fenergy_bar(work_r, work_f), (-10.126372790165997, 0.39715725693786963)
-    )
+    fe, sderr = fenergy_bar(work_f, work_r)
+    assert jnp.isclose(fe, 10.126372790165997)
+    assert jnp.isclose(sderr, 0.39715725693786963)
 
-    assert np.allclose(
-        fenergy_bar(work_f, work_r, uncertainty_method="BAR"),
-        (10.126372790165997, 0.39715725693786963),
-    )
-    assert np.allclose(
-        fenergy_bar(work_f, work_r, uncertainty_method="MBAR"),
-        (10.126372790165997, 0.40080301959064535),
-    )
-    assert np.allclose(
-        fenergy_bar(work_f, work_r, uncertainty_method="Logistic"),
-        (10.126372790165997, 0.40080301959064535),
-    )
+    fe, sderr = fenergy_bar(work_r, work_f)
+    assert jnp.isclose(fe, -10.126372790165997)
+    assert jnp.isclose(sderr, 0.39715725693786963)
+
+    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="BAR")
+    assert jnp.isclose(fe, 10.126372790165997)
+    assert jnp.isclose(sderr, 0.39715725693786963)
+
+    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="MBAR")
+    assert jnp.isclose(fe, 10.126372790165997)
+    assert jnp.isclose(sderr, 0.40080301959064535)
+
+    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="Logistic")
+    assert jnp.isclose(fe, 10.126372790165997)
+    assert jnp.isclose(sderr, 0.40080301959064535)
 
     # Note: for high dissipation the error estimate too low with BAR, too high with MBAR
-    assert np.allclose(
-        fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="BAR"),
-        (9.341808032205543, 1.1165063184118718),
+    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="BAR")
+    assert jnp.isclose(fe, 9.341808032205543)
+    assert jnp.isclose(sderr, 1.1165063184118718)
+
+    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="MBAR")
+    assert jnp.isclose(fe, 9.341808032205543)
+    assert jnp.isclose(sderr, 78.83605670383308)
+
+    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="Logistic")
+    assert jnp.isclose(fe, 9.341808032205543)
+    assert jnp.isclose(sderr, 5.928521477224136)
+
+    fe, sderr = fenergy_bar(
+        work_f_diss,
+        work_r_diss,
+        weights_f=jnp.ones_like(work_f_diss),
+        weights_r=jnp.ones_like(work_r_diss),
+        uncertainty_method="Logistic",
     )
-    assert np.allclose(
-        fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="MBAR"),
-        (9.341808032205543, 78.83605670383308),
-    )
-    assert np.allclose(
-        fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="Logistic"),
-        (9.341808032205543, 5.928521477224136),
-    )
-    assert np.allclose(
-        fenergy_bar(
-            work_f_diss,
-            work_r_diss,
-            weights_f=np.ones_like(work_f_diss),
-            weights_r=np.ones_like(work_r_diss),
-            uncertainty_method="Logistic",
-        ),
-        (9.341808032205543, 5.928521477224136),
-    )
+    assert jnp.isclose(fe, 9.341808032205543)
+    assert jnp.isclose(sderr, 5.928521477224136)
 
 
 def test_fenergy_bar_error() -> None:
@@ -82,34 +78,19 @@ def test_fenergy_bar_error() -> None:
 
 
 def test_fenergy_bayesian() -> None:
-    assert np.allclose(
-        fenergy_bayesian(work_f, work_r),
-        (10.129329739999651, 0.5091539010758899),
-    )
+    fe, sderr = fenergy_bayesian(work_f, work_r)
+    assert jnp.isclose(fe, 10.129329739999651)
+    assert jnp.isclose(sderr, 0.5091539010758899)
 
-    assert np.allclose(
-        fenergy_bayesian(work_f_diss, work_r_diss),
-        (9.491682713739426, 5.564798805609418),
-    )
-
-
-def test_logexpit() -> None:
-
-    # For values near 0, no tricks
-    for n in range(10):
-        x = np.asarray(normal())
-        assert np.isclose(_logexpit(x), np.log(expit(x)))
-
-    assert np.isclose(_logexpit(-1000.0), -1000.0)  # type: ignore
-    assert np.isclose(_logexpit(1000.0), 0.0)  # type: ignore
+    fe, sderr = fenergy_bayesian(work_f_diss, work_r_diss)
+    assert jnp.isclose(fe, 9.491682713739426)
+    assert jnp.isclose(sderr, 5.564798805609418)
 
 
 def test_fenergy_symmetric_bar() -> None:
-
-    assert np.allclose(
-        fenergy_symmetric_bar(work_sym_f, work_sym_r),
-        (1.1867614815656458, 0.21931716664445491),
-    )
+    fe, sderr = fenergy_symmetric_bar(work_sym_f, work_sym_r)
+    assert jnp.isclose(fe, 1.1867614815656458)
+    assert jnp.isclose(sderr, 0.21931716664445491)
 
 
 def test_fenergy_symmetric_nnznm() -> None:
@@ -127,10 +108,10 @@ def test_fenergy_symmetric_bidirectional() -> None:
 # Fixed random work samples for testing.
 # fe = 10
 # diss = 4
-# work_f = random.normal(loc=diss + fe, scale=np.sqrt(2 * diss), size=(20,))
-# work_r = random.normal(loc=diss - fe, scale=np.sqrt(2 * diss), size=(20,))
+# work_f = random.normal(loc=diss + fe, scale=jnp.sqrt(2 * diss), size=(20,))
+# work_r = random.normal(loc=diss - fe, scale=jnp.sqrt(2 * diss), size=(20,))
 
-work_f = np.array(
+work_f = jnp.array(
     [
         12.26186058,
         12.02296197,
@@ -155,7 +136,7 @@ work_f = np.array(
     ]
 )
 
-work_r = np.array(
+work_r = jnp.array(
     [
         -7.03024785,
         -5.97147992,
@@ -184,7 +165,7 @@ work_r = np.array(
 # fe = 10
 # diss = 20
 
-work_f_diss = np.array(
+work_f_diss = jnp.array(
     [
         31.93691244,
         37.52776423,
@@ -198,7 +179,7 @@ work_f_diss = np.array(
         25.31003161,
     ]
 )
-work_r_diss = np.array(
+work_r_diss = jnp.array(
     [
         8.99668577,
         0.83206027,
@@ -215,7 +196,7 @@ work_r_diss = np.array(
 
 # Generated from a simple simulation of
 # harmonic oscillator moving to and fro.
-work_sym_f = np.array(
+work_sym_f = jnp.array(
     [
         1.82819018,
         1.36855722,
@@ -319,7 +300,7 @@ work_sym_f = np.array(
         4.29157184,
     ]
 )
-work_sym_r = np.array(
+work_sym_r = jnp.array(
     [
         1.32803648,
         -1.46565987,

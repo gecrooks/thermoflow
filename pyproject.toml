@@ -10,8 +10,6 @@ requires = ["setuptools>=67.0", "setuptools_scm[toml]>=7.1"]
 name = "thermoflow"
 dynamic = ["version"]
 dependencies = [
-    "numpy",
-    "scipy",
     "jax",
 ]
 requires-python =">=3.12"
