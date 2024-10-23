@@ -15,7 +15,7 @@ https://github.com/google/jax/blob/main/jax/_src/typing.py
 """
 
 import dataclasses
-from dataclasses import dataclass
+
 import time
 import os
 from typing import Any, Sequence, Tuple, Type, Optional
