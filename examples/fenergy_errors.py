@@ -1,6 +1,8 @@
+# Copyright 2021-2024 Gavin E. Crooks
 #
-# Exploration of different error estimates for free energies
-#
+# This source code is licensed under the Apache License 2.0
+# found in the LICENSE file in the root directory of this source tree.
+
 import numpy as np
 
 from thermoflow import fenergy_bar, fenergy_bayesian
