@@ -55,7 +55,7 @@ packages = ["thermoflow"]
 fallback_version = "0.0.0.dev"
 
 
-[tools.ruff]
+[tool.ruff]
 # https://docs.astral.sh/ruff/configuration/
 line-length = 88
 indent-width = 4
@@ -97,8 +97,8 @@ exclude_lines = [
 # mypy typecheck configuration
 # https://mypy.readthedocs.io/en/stable/config_file.html
 
-# [tools.mypy]
-
+[tool.mypy]
+files = 'thermoflow'
 
 # Suppresses error about unresolved imports (i.e. from numpy)
 ignore_missing_imports = true
