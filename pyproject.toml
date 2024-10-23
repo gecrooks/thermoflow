@@ -1,9 +1,107 @@
-# pyproject.toml
+
+
+
 [build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools>=67.0", "setuptools_scm[toml]>=7.1"]
 
 
-# pyproject.toml
+[project]
+name = "thermoflow"
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "scipy",
+    "jax",
+]
+requires-python =">=3.12"
+
+authors = [
+  {name = "Gavin E. Crooks", email = "gec@threeplusone.com"},
+]
+description = "Python package for nonequilibrium thermodynamic calculations"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = []
+classifiers = [ 
+  "Development Status :: 3 - Alpha",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries",
+  "License :: OSI Approved :: Apache Software License",
+]
+
+[project.urls]
+Homepage = "https://github.com/gecrooks/thermoflow/"
+
+
+[project.optional-dependencies]
+dev = [
+    "setuptools_scm",
+    "pytest",
+    "pytest-cov",
+    "mypy",
+    "sphinx",
+    "ruff",
+    "pre-commit",
+]
+
+
+[tool.setuptools]
+packages = ["thermoflow"]
+
+
 [tool.setuptools_scm]
+fallback_version = "0.0.0.dev"
 
+
+[tool.ruff]
+# https://docs.astral.sh/ruff/configuration/
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Don't complaine about unused imports in __init__.py
+"__init__.py" = ["F401", "F403"]
+
+
+# pytest configuration
+# https://docs.pytest.org/en/7.2.x/reference/customize.html
+
+[tool.pytest.ini_options]
+testpaths = "thermoflow"
+
+
+
+[tool.coverage.run]
+branch = true
+source = ["thermoflow"]
+parallel = true
+
+[tool.coverage.report]
+omit = ['*_test.py']
+exclude_lines = [
+  '\#\s*pragma: no cover',
+  '^\s*raise AssertionError\b',
+  '^\s*raise NotImplementedError\b',
+  '^\s*return NotImplemented\b',
+  '^\s*raise$',
+  '^assert False\b',
+  '''^if __name__ == ['"]__main__['"]:$''',
+]
+
+
+# mypy typecheck configuration
+# https://mypy.readthedocs.io/en/stable/config_file.html
+
+[tool.mypy]
+files = 'thermoflow'
+
+# Suppresses error about unresolved imports (i.e. from numpy)
+ignore_missing_imports = true
+
+# Disallows functions without type annotations
+disallow_untyped_defs = true

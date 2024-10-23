@@ -1,9 +1,11 @@
+# Copyright 2021-2024 Gavin E. Crooks
 #
-# Explration of different erorr estiamtes for free energies
-#
+# This source code is licensed under the Apache License 2.0
+# found in the LICENSE file in the root directory of this source tree.
+
 import numpy as np
 
-from disorder import fenergy_bar, fenergy_bayesian
+from thermoflow import fenergy_bar, fenergy_bayesian
 
 fe = 0
 diss = 100

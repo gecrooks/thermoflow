@@ -1,15 +1,15 @@
-# Copyright 2021, Gavin E. Crooks and contributors
+# Copyright 2021-2024 Gavin E. Crooks
 #
 # This source code is licensed under the Apache License 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
 # Command line interface for the about() function
-# > python -m disorder.about
+# > python -m thermoflow.about
 #
 # NB: This module should not be imported by any other code in the package
 # (else we will get multiple import warnings)
 
 if __name__ == "__main__":
-    import disorder
+    import thermoflow
 
-    disorder.about()
+    thermoflow.about()

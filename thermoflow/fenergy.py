@@ -1,10 +1,10 @@
-# Copyright 2021, Gavin E. Crooks and contributors
+# Copyright 2021-2024 Gavin E. Crooks
 #
 # This source code is licensed under the Apache License 2.0 found in
 # the LICENSE.txt file in the root directory of this source tree.
 
 
-from typing import Tuple
+from typing import Tuple, Optional
 
 import numpy as np
 from numpy.typing import ArrayLike  # numpy v1.20
@@ -40,8 +40,8 @@ def fenergy_logmeanexp_gaussian(work_f: ArrayLike) -> float:
 def fenergy_bar(
     work_f: ArrayLike,
     work_r: ArrayLike,
-    weights_f: ArrayLike = None,
-    weights_r: ArrayLike = None,
+    weights_f: Optional[ArrayLike] = None,
+    weights_r: Optional[ArrayLike] = None,
     uncertainty_method: str = "BAR",
 ) -> Tuple[float, float]:
     """
@@ -73,8 +73,8 @@ def fenergy_bar(
     N_r = sum(weights_r)
     M = np.log(N_f / N_r)
 
-    lower = min(np.amin(W_f), np.amin(-W_r))
-    upper = max(np.amax(W_f), np.amax(-W_r))
+    lower = np.min(np.asarray([np.amin(W_f), np.amin(-W_r)]))
+    upper = np.max(np.asarray([np.amax(W_f), np.amax(-W_r)]))
 
     def _bar(delta_fenergy: float) -> float:
 

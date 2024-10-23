@@ -1,4 +1,4 @@
-# Copyright 2021, Gavin E. Crooks and contributors
+# Copyright 2021-2024 Gavin E. Crooks
 #
 # This source code is licensed under the Apache License 2.0
 # found in the LICENSE file in the root directory of this source tree.
@@ -23,7 +23,7 @@ except Exception:  # pragma: no cover
     __version__ = "?.?.?"
 
 
-def about(file: typing.TextIO = None) -> None:
+def about(file: typing.Optional[typing.TextIO] = None) -> None:
     f"""Print information about the package
 
      ``> python -m {__package__}.about``
