@@ -97,7 +97,7 @@ def test_logexpit() -> None:
 
     # For values near 0, no tricks
     for n in range(10):
-        x = normal()
+        x = np.asarray(normal())
         assert np.isclose(_logexpit(x), np.log(expit(x)))
 
     assert np.isclose(_logexpit(-1000.0), -1000.0)  # type: ignore

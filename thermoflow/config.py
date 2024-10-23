@@ -23,7 +23,7 @@ except Exception:  # pragma: no cover
     __version__ = "?.?.?"
 
 
-def about(file: typing.TextIO = None) -> None:
+def about(file: typing.Optional[typing.TextIO] = None) -> None:
     f"""Print information about the package
 
      ``> python -m {__package__}.about``
