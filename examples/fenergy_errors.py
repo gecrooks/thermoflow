@@ -1,9 +1,9 @@
 #
-# Explration of different erorr estiamtes for free energies
+# Exploration of different error estimates for free energies
 #
 import numpy as np
 
-from disorder import fenergy_bar, fenergy_bayesian
+from thermoflow import fenergy_bar, fenergy_bayesian
 
 fe = 0
 diss = 100
