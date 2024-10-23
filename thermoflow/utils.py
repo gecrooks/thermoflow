@@ -36,13 +36,8 @@ type ArrayLike = jax.typing.ArrayLike
 
 type DTypeLike = jax.typing.DTypeLike
 
-type Scalar = Array
-"""JAX zero-dimensional array"""
-
-type ScalarLike = ArrayLike
-
 type Shape = Sequence[int]
-
+"""JAX array shape type"""
 
 # == Jax Utils
 
