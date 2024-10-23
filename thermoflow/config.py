@@ -15,6 +15,9 @@ from importlib import metadata as importlib_metadata  # type: ignore
 
 __all__ = ["__version__", "about"]
 
+import jax
+
+jax.config.update("jax_enable_x64", True)
 
 try:
     __version__ = importlib_metadata.version(__package__)  # type: ignore
