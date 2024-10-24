@@ -44,4 +44,4 @@ jobs:
         python -m mypy
     - name: Build documentation with sphinx
       run: |
-        (cd docsrc; make html)
+        (cd docs; make html)
