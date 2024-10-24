@@ -5,7 +5,7 @@
 .DEFAULT_GOAL := help
 
 NAME = thermoflow
-FILES = $(NAME) docsrc/conf.py setup.py
+FILES = $(NAME) docs/conf.py setup.py
 
 .PHONY: help
 help:
@@ -61,23 +61,16 @@ precommit: ## Run all pre-commit hooks
 
 .PHONY: docs
 docs:  ## Build documentation
-	(cd docsrc; make html)
+	(cd docs; make html)
 
 .PHONY: docs-open
 docs-open:  ## Build documentation and open in webbrowser
-	(cd docsrc; make html)
-	open docsrc/_build/html/index.html
+	(cd docs; make html)
+	open docs/_build/html/index.html
 
 .PHONY: docs-clean
 docs-clean:  ## Clean documentation build
-	(cd docsrc; make clean)
-
-.PHONY: docs-github-pages
-docs-github-pages: docs  ## Install html in docs directory ready for github pages
-	# https://www.docslikecode.com/articles/github-pages-python-sphinx/
-	@mkdir -p docs
-	@touch docs/.nojekyll  # Tell github raw html, not jekyll
-	@cp -a _build/html/. ../docs
+	(cd docs; make clean)
 
 .PHONY: pragmas
 pragmas:  ## Report all pragmas in code
