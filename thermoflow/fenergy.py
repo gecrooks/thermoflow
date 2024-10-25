@@ -3,6 +3,33 @@
 # This source code is licensed under the Apache License 2.0 found in
 # the LICENSE.txt file in the root directory of this source tree.
 
+"""
+Estimates of free energy from work measurements.
+
+All works and free energies are in multiples of kT. (i.e. nats)
+
+
+Free Energy Estimates
+---------------------
+.. autofunction:: thermoflow.fenergy_bar
+
+.. autofunction:: thermoflow.fenergy_bayesian
+
+.. autofunction:: thermoflow.fenergy_logmeanexp
+
+.. autofunction:: thermoflow.fenergy_logmeanexp_gaussian
+
+
+Free Energy Estimates for symmetric protocols
+--------------------------------------------
+.. autofunction:: thermoflow.fenergy_symmetric_bar
+
+.. autofunction:: thermoflow.fenergy_symmetric_bidirectional
+
+.. autofunction:: thermoflow.fenergy_symmetric_nnznm"
+
+
+"""
 
 from typing import Tuple, Optional
 
@@ -10,7 +37,7 @@ import jax.numpy as jnp
 
 from jax.scipy.special import (
     expit,
-)  # Logistic sigmoid function: expit(x) = 1/(1+exp(-x))
+)  # Logistic sigmoid: expit(x) = 1/(1+exp(-x))
 from jax.scipy.special import logsumexp
 import jaxopt
 
@@ -28,6 +55,20 @@ __all__ = (
 
 
 def fenergy_logmeanexp(work_f: ArrayLike) -> Array:
+    """
+    Calculate the free energy difference from a series of work measurements
+    using the Jarzynski equality.
+
+    (Note that we can't calculate an accurate error bounds for Jarzynski estimate
+    using measurements from only a single protocol directions.)
+
+    Args:
+        work_f: Array of shape [N]
+    Returns:
+        Delta free energy
+    Ref:
+        TODO
+    """
     work_f = jnp.asarray(work_f, dtype=jnp.float64)
     N_f = work_f.size
     delta_fenergy = -(logsumexp(-work_f) - jnp.log(N_f))
@@ -36,6 +77,17 @@ def fenergy_logmeanexp(work_f: ArrayLike) -> Array:
 
 
 def fenergy_logmeanexp_gaussian(work_f: ArrayLike) -> Array:
+    """
+    Calculate the free energy difference from a series of work measurements
+    under the assumption that the work distributions is Gaussian.
+
+    Args:
+        work_f: Array of shape [N]
+    Returns:
+        Delta free energy
+    Ref:
+        TODO
+    """
     work_f = jnp.asarray(work_f, dtype=jnp.float64)
     delta_fenergy = jnp.average(work_f) - 0.5 * jnp.var(work_f)
     return delta_fenergy
@@ -49,16 +101,27 @@ def fenergy_bar(
     uncertainty_method: str = "BAR",
 ) -> Tuple[Array, Array]:
     """
+    Estimate a free energy difference using the Bennett Acceptance Ratio method (BAR).
+
+    Three methods for estimating the error are provided. The original 'BAR' method [1],
+    which underestimates the error if the posterior is not Gaussian (this happens
+    when there is little overlap between the forward and negative reverse work
+    distributions and therefore the uncertainties are large); the 'MBAR' [3] approach which
+    is optimal in the large sample limit, but overestimates the error when the
+    posteriors are not Gaussian, and 'logistic', which is the MBAR error,
+    but with a correction for non-overlapping work distributions.
 
     Args:
         work_f: Measurements of work from forward protocol.
         work_r: Measurements of work from reverse protocol.
         weights_f:  Optional weights for forward works
         weights_r:  Optional weights for reverse works
-        uncertainty_method: Method to calculate errors ("BAR", "MBAR", or "Logistic")
+        uncertainty_method: Method to calculate errors ("BAR" [1], "MBAR"[3], or "Logistic"[4])
 
     Returns:
         Estimated free energy difference, and the estimated error
+    Refs:
+        ???, ???, ???, ???
 
     """
 
@@ -142,7 +205,14 @@ def fenergy_bayesian(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array
 
 
 def fenergy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array]:
-    """DOCME"""
+    """The Bayesian free energy posterior distribution.
+
+    Args:
+        work_f: Measurements of work from forward protocol.
+        work_r: Measurements of work from reverse protocol.
+    Returns:
+        energy and probability, pair of arrays of shapes [N]
+    """
 
     w_f = jnp.asarray(work_f, dtype=jnp.float64)
     w_r = jnp.asarray(work_r, dtype=jnp.float64)
