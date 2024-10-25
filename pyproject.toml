@@ -39,11 +39,16 @@ dev = [
     "pytest-cov",
     "mypy",
     "sphinx",
+    "guzzle_sphinx_theme",
     "ruff",
     "pre-commit",
     "pymbar", # Used in testing
 ]
 
+docs = [
+  "sphinx",
+  "guzzle_sphinx_theme",
+  ]
 
 [tool.setuptools]
 packages = ["thermoflow"]
