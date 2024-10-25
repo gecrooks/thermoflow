@@ -13,13 +13,9 @@
 import sys
 import os
 import guzzle_sphinx_theme
-from setuptools_scm import get_version
+import thermoflow
 
 sys.path.insert(0, os.path.abspath(".."))
-
-
-__version__ = get_version(root="..", relative_to=__file__)
-print("__version__", __version__)
 
 
 # -- Project information -----------------------------------------------------
@@ -27,14 +23,15 @@ print("__version__", __version__)
 project = "thermoflow"
 copyright = "2022-2024 Gavin Crooks"
 author = "Gavin Crooks"
-release = __version__
+release = thermoflow.__version__
+
 
 html_title = "ThermoFlow Documentation"
 html_short_title = "ThermoFlow"
 
 # Insert version in side bar
 with open("./_templates/version.html", "w") as f:
-    f.write('<div align="center">v%s</div>' % __version__)
+    f.write('<div align="center">v%s</div>' % release)
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
