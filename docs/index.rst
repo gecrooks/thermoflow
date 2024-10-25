@@ -1,17 +1,20 @@
 
 
-Welcome to the documentation!
-=============================
+ThermoFlow
+==========
+
+* Release:  |release| (|today|)
+* Code: https://github.com/gecrooks/thermoflow/
+* Docs: https://gecrooks.github.io/thermoflow/
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   free_energy
+   time_series
 
-
-Indices and tables
-==================
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+

@@ -9,17 +9,37 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+
+import sys
+import os
+import guzzle_sphinx_theme
+from setuptools_scm import get_version
+
+sys.path.insert(0, os.path.abspath(".."))
+
+
+__version__ = get_version(root="..", relative_to=__file__)
+print("__version__", __version__)
 
 
 # -- Project information -----------------------------------------------------
 
-project = "gecrooks-python-template"
-copyright = "2020, Gavin Crooks"
+project = "thermoflow"
+copyright = "2022-2024 Gavin Crooks"
 author = "Gavin Crooks"
+release = __version__
+
+html_title = "ThermoFlow Documentation"
+html_short_title = "ThermoFlow"
+
+# Insert version in side bar
+with open("./_templates/version.html", "w") as f:
+    f.write('<div align="center">v%s</div>' % __version__)
+
+# Custom sidebar templates, maps document names to template names.
+html_sidebars = {
+    "**": ["logo-text.html", "version.html", "searchbox.html", "globaltoc.html"]
+}
 
 
 # -- General configuration ---------------------------------------------------
@@ -30,7 +50,11 @@ author = "Gavin Crooks"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.githubpages",
 ]
+
+extensions.append("guzzle_sphinx_theme")
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -46,9 +70,14 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "alabaster"
+html_theme_path = guzzle_sphinx_theme.html_theme_path()
+html_theme = "guzzle_sphinx_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+
+autodoc_typehints = ["description"]
+autodoc_member_order = ["bysource"]

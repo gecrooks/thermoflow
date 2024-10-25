@@ -18,15 +18,13 @@ requires-python =">=3.12"
 authors = [
   {name = "Gavin E. Crooks", email = "gec@threeplusone.com"},
 ]
-description = "Python package for nonequilibrium thermodynamic calculations"
+description = "Python package for thermodynamic calculations"
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = []
 classifiers = [ 
   "Development Status :: 3 - Alpha",
-  "Topic :: Software Development :: Build Tools",
   "Topic :: Scientific/Engineering",
-  "Topic :: Software Development :: Libraries",
   "License :: OSI Approved :: Apache Software License",
 ]
 
@@ -41,11 +39,16 @@ dev = [
     "pytest-cov",
     "mypy",
     "sphinx",
+    "guzzle_sphinx_theme",
     "ruff",
     "pre-commit",
     "pymbar", # Used in testing
 ]
 
+docs = [
+  "sphinx",
+  "guzzle_sphinx_theme",
+  ]
 
 [tool.setuptools]
 packages = ["thermoflow"]
@@ -100,8 +103,10 @@ exclude_lines = [
 [tool.mypy]
 files = 'thermoflow'
 
-# Suppresses error about unresolved imports (i.e. from numpy)
+# Suppresses error about unresolved imports
 ignore_missing_imports = true
 
 # Disallows functions without type annotations
 disallow_untyped_defs = true
+
+
