@@ -34,6 +34,7 @@ Free Energy Estimates for symmetric protocols
 from typing import Tuple, Optional
 
 import jax.numpy as jnp
+import jax
 
 from jax.scipy.special import (
     expit,
@@ -223,22 +224,16 @@ def free_energy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, 
 
     x = jnp.linspace(lower, upper, 100, dtype=jnp.float64)
 
-    res = [
-        None,
-    ] * x.size
-
     N_f = w_f.size
     N_r = w_r.size
     M = jnp.log(N_f / N_r)
 
-    # FIXME
-    for idx in range(x.size):
-        fe = x[idx]
+    def compute_log_prob(fe: Array) -> Array:
         diss_f = w_f - fe + M
         diss_r = w_r + fe - M
-        res[idx] = jnp.sum(logexpit(diss_f)) + jnp.sum(logexpit(diss_r))  # type: ignore
+        return jnp.sum(logexpit(diss_f)) + jnp.sum(logexpit(diss_r))  # type: ignore
 
-    log_prob = jnp.asarray(res)
+    log_prob = jax.vmap(compute_log_prob)(x)
 
     log_prob -= jnp.amax(log_prob)
     prob = jnp.exp(log_prob)
