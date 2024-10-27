@@ -22,7 +22,7 @@ description = "Python package for thermodynamic calculations"
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = []
-classifiers = [ 
+classifiers = [
   "Development Status :: 3 - Alpha",
   "Topic :: Scientific/Engineering",
   "License :: OSI Approved :: Apache Software License",

@@ -7,3 +7,10 @@ repos:
     - id: ruff
       args: ["--fix"]
     - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0  # Use the ref you want to point at
+    hooks:
+    -   id: check-toml
+    -   id: check-yaml
+    -   id: trailing-whitespace

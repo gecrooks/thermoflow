@@ -24,7 +24,7 @@ status:  ## git status --short --branch
 .PHONY: init
 init:  ## Install package ready for development
 	python -m pip install --upgrade pip
-	if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi         
+	if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
 	python -m pip install -e .[dev]
 	python -m pre-commit install  # Install git pre-commit hook
 
@@ -44,15 +44,15 @@ coverage:  ## Report test coverage
 
 .PHONY: lint
 lint:  ## Lint check python source
-	@python -m ruff check 
+	@python -m ruff check
 
 .PHONY: delint
 delint:
-	@echo	
+	@echo
 	python -m ruff format
 
 .PHONY: typecheck
-typecheck:  ## Static typechecking 
+typecheck:  ## Static typechecking
 	python -m mypy $(NAME)
 
 .PHONY: precommit
