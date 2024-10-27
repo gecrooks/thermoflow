@@ -7,3 +7,4 @@ from .config import __version__  # noqa: F401
 from .config import about  # noqa: F401
 from .free_energy import *  # noqa: F401 F403
 from .time_series import *  # noqa: F401 F403
+from .work import *  # noqa: F401 F403
