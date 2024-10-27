@@ -11,22 +11,22 @@ All works and free energies are in multiples of kT. (i.e. nats)
 
 Free Energy Estimates
 ---------------------
-.. autofunction:: thermoflow.fenergy_bar
+.. autofunction:: thermoflow.free_energy_bar
 
-.. autofunction:: thermoflow.fenergy_bayesian
+.. autofunction:: thermoflow.free_energy_bayesian
 
-.. autofunction:: thermoflow.fenergy_logmeanexp
+.. autofunction:: thermoflow.free_energy_logmeanexp
 
-.. autofunction:: thermoflow.fenergy_logmeanexp_gaussian
+.. autofunction:: thermoflow.free_energy_logmeanexp_gaussian
 
 
 Free Energy Estimates for symmetric protocols
 --------------------------------------------
-.. autofunction:: thermoflow.fenergy_symmetric_bar
+.. autofunction:: thermoflow.free_energy_symmetric_bar
 
-.. autofunction:: thermoflow.fenergy_symmetric_bidirectional
+.. autofunction:: thermoflow.free_energy_symmetric_bidirectional
 
-.. autofunction:: thermoflow.fenergy_symmetric_nnznm"
+.. autofunction:: thermoflow.free_energy_symmetric_nnznm"
 
 
 """
@@ -34,6 +34,7 @@ Free Energy Estimates for symmetric protocols
 from typing import Tuple, Optional
 
 import jax.numpy as jnp
+import jax
 
 from jax.scipy.special import (
     expit,
@@ -44,17 +45,17 @@ import jaxopt
 from .utils import logexpit, Array, ArrayLike
 
 __all__ = (
-    "fenergy_bar",
-    "fenergy_bayesian",
-    "fenergy_logmeanexp",
-    "fenergy_logmeanexp_gaussian",
-    "fenergy_symmetric_bar",
-    "fenergy_symmetric_bidirectional",
-    "fenergy_symmetric_nnznm",
+    "free_energy_bar",
+    "free_energy_bayesian",
+    "free_energy_logmeanexp",
+    "free_energy_logmeanexp_gaussian",
+    "free_energy_symmetric_bar",
+    "free_energy_symmetric_bidirectional",
+    "free_energy_symmetric_nnznm",
 )
 
 
-def fenergy_logmeanexp(work_f: ArrayLike) -> Array:
+def free_energy_logmeanexp(work_f: ArrayLike) -> Array:
     """
     Calculate the free energy difference from a series of work measurements
     using the Jarzynski equality.
@@ -71,12 +72,12 @@ def fenergy_logmeanexp(work_f: ArrayLike) -> Array:
     """
     work_f = jnp.asarray(work_f, dtype=jnp.float64)
     N_f = work_f.size
-    delta_fenergy = -(logsumexp(-work_f) - jnp.log(N_f))
+    delta_free_energy = -(logsumexp(-work_f) - jnp.log(N_f))
 
-    return delta_fenergy
+    return delta_free_energy
 
 
-def fenergy_logmeanexp_gaussian(work_f: ArrayLike) -> Array:
+def free_energy_logmeanexp_gaussian(work_f: ArrayLike) -> Array:
     """
     Calculate the free energy difference from a series of work measurements
     under the assumption that the work distributions is Gaussian.
@@ -89,11 +90,11 @@ def fenergy_logmeanexp_gaussian(work_f: ArrayLike) -> Array:
         TODO
     """
     work_f = jnp.asarray(work_f, dtype=jnp.float64)
-    delta_fenergy = jnp.average(work_f) - 0.5 * jnp.var(work_f)
-    return delta_fenergy
+    delta_free_energy = jnp.average(work_f) - 0.5 * jnp.var(work_f)
+    return delta_free_energy
 
 
-def fenergy_bar(
+def free_energy_bar(
     work_f: ArrayLike,
     work_r: ArrayLike,
     weights_f: Optional[ArrayLike] = None,
@@ -143,20 +144,20 @@ def fenergy_bar(
     lower = jnp.min(jnp.asarray([jnp.amin(W_f), jnp.amin(-W_r)]))
     upper = jnp.max(jnp.asarray([jnp.amax(W_f), jnp.amax(-W_r)]))
 
-    def _bar(delta_fenergy: float) -> Array:
-        diss_f = W_f - delta_fenergy + M
-        diss_r = W_r + delta_fenergy - M
+    def _bar(delta_free_energy: float) -> Array:
+        diss_f = W_f - delta_free_energy + M
+        diss_r = W_r + delta_free_energy - M
 
         f = jnp.log(jnp.sum(weights_f * expit(-diss_f)))
         r = jnp.log(jnp.sum(weights_r * expit(-diss_r)))
         return f - r
 
     # Maximum likelihood free energy
-    delta_fenergy = jaxopt.Bisection(_bar, lower, upper).run().params  # Find root
+    delta_free_energy = jaxopt.Bisection(_bar, lower, upper).run().params  # Find root
 
     # Error estimation
-    diss_f = work_f - delta_fenergy + M
-    diss_r = work_r + delta_fenergy - M
+    diss_f = work_f - delta_free_energy + M
+    diss_r = work_r + delta_free_energy - M
 
     slogF = jnp.sum(weights_f * expit(-diss_f))
     slogR = jnp.sum(weights_r * expit(-diss_r))
@@ -183,10 +184,10 @@ def fenergy_bar(
     else:
         raise ValueError("Unknown uncertainty estimation method")
 
-    return delta_fenergy, err
+    return delta_free_energy, err
 
 
-def fenergy_bayesian(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array]:
+def free_energy_bayesian(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array]:
     """Bayesian free energy estimate
 
     Args:
@@ -196,15 +197,15 @@ def fenergy_bayesian(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array
     Returns:
         Posterior mean estimate of the free energy difference, and the estimated error
     """
-    df, prob = fenergy_posterior(work_f, work_r)
+    df, prob = free_energy_posterior(work_f, work_r)
 
-    delta_fenergy = jnp.sum(df * prob)
-    err = jnp.sqrt(jnp.sum(df * df * prob) - delta_fenergy**2)
+    delta_free_energy = jnp.sum(df * prob)
+    err = jnp.sqrt(jnp.sum(df * df * prob) - delta_free_energy**2)
 
-    return delta_fenergy, err
+    return delta_free_energy, err
 
 
-def fenergy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array]:
+def free_energy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Array]:
     """The Bayesian free energy posterior distribution.
 
     Args:
@@ -217,28 +218,22 @@ def fenergy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Arra
     w_f = jnp.asarray(work_f, dtype=jnp.float64)
     w_r = jnp.asarray(work_r, dtype=jnp.float64)
 
-    fe, err = fenergy_bar(work_f, work_r, uncertainty_method="Logistic")
+    fe, err = free_energy_bar(work_f, work_r, uncertainty_method="Logistic")
     lower = fe - 4 * err
     upper = fe + 4 * err
 
     x = jnp.linspace(lower, upper, 100, dtype=jnp.float64)
 
-    res = [
-        None,
-    ] * x.size
-
     N_f = w_f.size
     N_r = w_r.size
     M = jnp.log(N_f / N_r)
 
-    # FIXME
-    for idx in range(x.size):
-        fe = x[idx]
+    def compute_log_prob(fe: Array) -> Array:
         diss_f = w_f - fe + M
         diss_r = w_r + fe - M
-        res[idx] = jnp.sum(logexpit(diss_f)) + jnp.sum(logexpit(diss_r))  # type: ignore
+        return jnp.sum(logexpit(diss_f)) + jnp.sum(logexpit(diss_r))  # type: ignore
 
-    log_prob = jnp.asarray(res)
+    log_prob = jax.vmap(compute_log_prob)(x)
 
     log_prob -= jnp.amax(log_prob)
     prob = jnp.exp(log_prob)
@@ -247,7 +242,7 @@ def fenergy_posterior(work_f: ArrayLike, work_r: ArrayLike) -> Tuple[Array, Arra
     return x, prob
 
 
-def fenergy_symmetric_bar(
+def free_energy_symmetric_bar(
     work_ab: ArrayLike,
     work_bc: ArrayLike,
     uncertainty_method: str = "BAR",
@@ -266,11 +261,11 @@ def fenergy_symmetric_bar(
     work_ab = jnp.asarray(work_ab, dtype=jnp.float64)
     work_bc = jnp.asarray(work_bc, dtype=jnp.float64)
 
-    weights_r = jnp.exp(-work_ab - fenergy_logmeanexp(work_ab))
-    return fenergy_bar(work_ab, work_bc, None, weights_r, uncertainty_method)
+    weights_r = jnp.exp(-work_ab - free_energy_logmeanexp(work_ab))
+    return free_energy_bar(work_ab, work_bc, None, weights_r, uncertainty_method)
 
 
-def fenergy_symmetric_nnznm(work_ab: ArrayLike, work_bc: ArrayLike) -> Array:
+def free_energy_symmetric_nnznm(work_ab: ArrayLike, work_bc: ArrayLike) -> Array:
     """Free energy estimate for cyclic protocol.
 
     "Non equilibrium path-ensemble averages for symmetric protocols"
@@ -287,14 +282,16 @@ def fenergy_symmetric_nnznm(work_ab: ArrayLike, work_bc: ArrayLike) -> Array:
 
     delta_fenegy = (
         -jnp.log(2)
-        + fenergy_logmeanexp(-work_ab)
-        + jnp.log(1 + jnp.exp(-fenergy_logmeanexp(-work_ab - work_bc)))
+        + free_energy_logmeanexp(-work_ab)
+        + jnp.log(1 + jnp.exp(-free_energy_logmeanexp(-work_ab - work_bc)))
     )
 
     return delta_fenegy
 
 
-def fenergy_symmetric_bidirectional(work_ab: ArrayLike, work_bc: ArrayLike) -> Array:
+def free_energy_symmetric_bidirectional(
+    work_ab: ArrayLike, work_bc: ArrayLike
+) -> Array:
     """
     The bidirectional Minh-Chodera free energy estimate specialized to a symmetric
     protocol.
