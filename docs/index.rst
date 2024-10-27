@@ -14,6 +14,7 @@ ThermoFlow
 
    free_energy
    time_series
+   work
 
 
 * :ref:`genindex`
