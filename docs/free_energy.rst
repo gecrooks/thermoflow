@@ -3,5 +3,5 @@ Free Energy Calculations
 ========================
 
 
-.. automodule :: thermoflow.fenergy
+.. automodule :: thermoflow.free_energy
 

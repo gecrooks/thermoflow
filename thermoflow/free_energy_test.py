@@ -8,60 +8,60 @@ import jax.numpy as jnp
 import pytest
 
 from thermoflow import (
-    fenergy_bar,
-    fenergy_bayesian,
-    fenergy_logmeanexp,
-    fenergy_logmeanexp_gaussian,
-    fenergy_symmetric_bar,
-    fenergy_symmetric_bidirectional,
-    fenergy_symmetric_nnznm,
+    free_energy_bar,
+    free_energy_bayesian,
+    free_energy_logmeanexp,
+    free_energy_logmeanexp_gaussian,
+    free_energy_symmetric_bar,
+    free_energy_symmetric_bidirectional,
+    free_energy_symmetric_nnznm,
 )
 
 
-def test_fenergy_logmeanexp() -> None:
-    assert jnp.isclose(fenergy_logmeanexp(work_f), 9.462820605969167)
-    assert jnp.isclose(fenergy_logmeanexp(work_r), -8.992876786373467)
+def test_free_energy_logmeanexp() -> None:
+    assert jnp.isclose(free_energy_logmeanexp(work_f), 9.462820605969167)
+    assert jnp.isclose(free_energy_logmeanexp(work_r), -8.992876786373467)
 
 
-def test_fenergy_logmeanexp_gaussian() -> None:
-    assert jnp.isclose(fenergy_logmeanexp_gaussian(work_f), 8.687926143699123)
+def test_free_energy_logmeanexp_gaussian() -> None:
+    assert jnp.isclose(free_energy_logmeanexp_gaussian(work_f), 8.687926143699123)
 
 
-def test_fenergy_bar() -> None:
-    fe, sderr = fenergy_bar(work_f, work_r)
+def test_free_energy_bar() -> None:
+    fe, sderr = free_energy_bar(work_f, work_r)
     assert jnp.isclose(fe, 10.126372790165997)
     assert jnp.isclose(sderr, 0.39715725693786963)
 
-    fe, sderr = fenergy_bar(work_r, work_f)
+    fe, sderr = free_energy_bar(work_r, work_f)
     assert jnp.isclose(fe, -10.126372790165997)
     assert jnp.isclose(sderr, 0.39715725693786963)
 
-    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="BAR")
+    fe, sderr = free_energy_bar(work_f, work_r, uncertainty_method="BAR")
     assert jnp.isclose(fe, 10.126372790165997)
     assert jnp.isclose(sderr, 0.39715725693786963)
 
-    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="MBAR")
+    fe, sderr = free_energy_bar(work_f, work_r, uncertainty_method="MBAR")
     assert jnp.isclose(fe, 10.126372790165997)
     assert jnp.isclose(sderr, 0.40080301959064535)
 
-    fe, sderr = fenergy_bar(work_f, work_r, uncertainty_method="Logistic")
+    fe, sderr = free_energy_bar(work_f, work_r, uncertainty_method="Logistic")
     assert jnp.isclose(fe, 10.126372790165997)
     assert jnp.isclose(sderr, 0.40080301959064535)
 
     # Note: for high dissipation the error estimate too low with BAR, too high with MBAR
-    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="BAR")
+    fe, sderr = free_energy_bar(work_f_diss, work_r_diss, uncertainty_method="BAR")
     assert jnp.isclose(fe, 9.341808032205543)
     assert jnp.isclose(sderr, 1.1165063184118718)
 
-    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="MBAR")
+    fe, sderr = free_energy_bar(work_f_diss, work_r_diss, uncertainty_method="MBAR")
     assert jnp.isclose(fe, 9.341808032205543)
     assert jnp.isclose(sderr, 78.83605670383308)
 
-    fe, sderr = fenergy_bar(work_f_diss, work_r_diss, uncertainty_method="Logistic")
+    fe, sderr = free_energy_bar(work_f_diss, work_r_diss, uncertainty_method="Logistic")
     assert jnp.isclose(fe, 9.341808032205543)
     assert jnp.isclose(sderr, 5.928521477224136)
 
-    fe, sderr = fenergy_bar(
+    fe, sderr = free_energy_bar(
         work_f_diss,
         work_r_diss,
         weights_f=jnp.ones_like(work_f_diss),
@@ -72,35 +72,35 @@ def test_fenergy_bar() -> None:
     assert jnp.isclose(sderr, 5.928521477224136)
 
 
-def test_fenergy_bar_error() -> None:
+def test_free_energy_bar_error() -> None:
     with pytest.raises(ValueError):
-        fenergy_bar(work_f, work_r, uncertainty_method="NOT_A_METHOD")
+        free_energy_bar(work_f, work_r, uncertainty_method="NOT_A_METHOD")
 
 
-def test_fenergy_bayesian() -> None:
-    fe, sderr = fenergy_bayesian(work_f, work_r)
+def test_free_energy_bayesian() -> None:
+    fe, sderr = free_energy_bayesian(work_f, work_r)
     assert jnp.isclose(fe, 10.129329739999651)
     assert jnp.isclose(sderr, 0.5091539010758899)
 
-    fe, sderr = fenergy_bayesian(work_f_diss, work_r_diss)
+    fe, sderr = free_energy_bayesian(work_f_diss, work_r_diss)
     assert jnp.isclose(fe, 9.491682713739426)
     assert jnp.isclose(sderr, 5.564798805609418)
 
 
-def test_fenergy_symmetric_bar() -> None:
-    fe, sderr = fenergy_symmetric_bar(work_sym_f, work_sym_r)
+def test_free_energy_symmetric_bar() -> None:
+    fe, sderr = free_energy_symmetric_bar(work_sym_f, work_sym_r)
     assert jnp.isclose(fe, 1.1867614815656458)
     assert jnp.isclose(sderr, 0.21931716664445491)
 
 
-def test_fenergy_symmetric_nnznm() -> None:
+def test_free_energy_symmetric_nnznm() -> None:
     # Note only tests that code runs. No regression as of yet.
-    fenergy_symmetric_nnznm(work_sym_f, work_sym_r)
+    free_energy_symmetric_nnznm(work_sym_f, work_sym_r)
 
 
-def test_fenergy_symmetric_bidirectional() -> None:
+def test_free_energy_symmetric_bidirectional() -> None:
     # Note only tests that code runs. No regression as of yet.
-    fenergy_symmetric_bidirectional(work_sym_f, work_sym_r)
+    free_energy_symmetric_bidirectional(work_sym_f, work_sym_r)
 
 
 # -- data --
