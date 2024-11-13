@@ -30,7 +30,9 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/gecrooks/thermoflow/"
-
+Documentation = "https://gecrooks.github.io/thermoflow/"
+Repository = "https://github.com/gecrooks/thermoflow.git"
+Issues = "https://github.com/gecrooks/thermoflow/issues"
 
 [project.optional-dependencies]
 dev = [

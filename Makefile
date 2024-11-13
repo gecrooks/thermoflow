@@ -1,13 +1,13 @@
 
-# Kudos: Adapted from Auto-documenting default target
-# https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 
-.DEFAULT_GOAL := help
 
 NAME = thermoflow
 FILES = $(NAME) docs/conf.py setup.py
 
+# Kudos: Adapted from Auto-documenting default target
+# https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
+.DEFAULT_GOAL := help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
@@ -92,3 +92,7 @@ build:  ## Build a phython soruce distribution and wheel
 .PHONY: requirements
 requirements:  ## Make requirements.txt
 	python -m pip freeze > requirements.txt
+
+.PHONY: pr
+pr:  ## Create a github pull request
+	gh pr create -f

@@ -35,9 +35,10 @@ def about(file: typing.Optional[typing.TextIO] = None) -> None:
         file: Output stream (Defaults to stdout)
     """
     metadata = importlib_metadata.metadata(__package__)  # type: ignore
+
     print(f"# {metadata['Name']}", file=file)
     print(f"{metadata['Summary']}", file=file)
-    print(f"{metadata['Home-page']}", file=file)
+    print(f"{metadata['Project-URL']}", file=file)
 
     name_width = 24
     versions = {}
