@@ -16,9 +16,9 @@ https://github.com/google/jax/blob/main/jax/_src/typing.py
 
 import dataclasses
 
-import time
 import os
 from typing import Any, Sequence, Tuple, Type, Optional
+import secrets
 
 import jax
 import jax.numpy as jnp
@@ -43,11 +43,11 @@ type Shape = Sequence[int]
 
 
 def random_key(seed: Optional[int] = None) -> Array:
-    """Return a random PRNG key array, seeded from the system clock.
+    """Return a random PRNG key array, seeded from the system entropy.
     Can be override by providing an explicit seed, or by setting the SEED
     environment variable
     """
-    seed = time.time_ns() if seed is None else seed
+    seed = secrets.randbits(63) if seed is None else seed
     seed = int(os.environ.get("SEED", seed))  #  environment variable override
 
     return jax.random.key(seed)
