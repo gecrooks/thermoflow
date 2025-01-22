@@ -175,9 +175,10 @@ def test_detect_equilibration() -> None:
     # equilibrium by about t=1300
     ts = time_series.correlated_time_series(key, 100.0, 10000, initial=10000000.)
 
-    # t, g, Neff = pymbar_timeseries.detect_equilibration_binary_search(ts)
+    t, g, Neff = pymbar_timeseries.detect_equilibration_binary_search(ts)
+    print(t, g, Neff)
     t, g, Neff = time_series.detect_equilibration(ts)
-
+    print(t,g, Neff)
     # Results checked against pymbar
     
     assert jnp.isclose(g, 122.29501307)
