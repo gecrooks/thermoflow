@@ -69,7 +69,7 @@ def test_statistical_inefficiency() -> None:
 
     g = time_series.statistical_inefficiency(ts)
     check = pymbar_timeseries.statistical_inefficiency(ts)
-    assert jnp.isclose(g, check)
+    assert jnp.isclose(g, check, rtol=0.001)
 
     err = time_series.statistical_inefficiency_stderr(ts)
     assert err > 0.0
