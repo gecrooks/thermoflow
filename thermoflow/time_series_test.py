@@ -169,12 +169,13 @@ def test_kirkwood_tensor() -> None:
 
 
 def test_detect_equilibration() -> None:
-    key = jax.random.key(42)
+    key = jax.random.key(41)
 
     # Generate a time series with a long initial transient. Settles down to
     # equilibrium by about t=1300
     ts = time_series.correlated_time_series(key, 100.0, 10000, initial=0.)
     print(ts[0:10])
+    print(ts[-10:-1])
     
     t, g, Neff = pymbar_timeseries.detect_equilibration_binary_search(ts)
     print(t, g, Neff)
