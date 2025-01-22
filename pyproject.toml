@@ -45,6 +45,7 @@ dev = [
     "ruff",
     "pre-commit",
     "pymbar", # Used in testing
+    "statsmodels",  # Used by pymbar
 ]
 
 docs = [
