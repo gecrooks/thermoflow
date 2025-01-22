@@ -173,7 +173,7 @@ def test_detect_equilibration() -> None:
 
     # Generate a time series with a long initial transient. Settles down to
     # equilibrium by about t=1300
-    ts = time_series.correlated_time_series(key, 100.0, 10000, initial=0.)
+    ts = time_series.correlated_time_series(key, 100.0, 10000, initial=10000000.)
     print(ts[0:10])
     print(ts[-10:-1])
     
