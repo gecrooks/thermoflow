@@ -548,8 +548,10 @@ def correlated_time_series(
         key, subkey = jax.random.split(key)
         initial_carry = jax.random.normal(subkey) * sd
     else:
-        initial_carry = jnp.asarray(initial)
-
+        initial_carry = jnp.asarray(float(initial))
+    print(phi, sd)
+    print("initial carry", initial_carry)
+    
     noise = jax.random.normal(key, (steps,))
 
     def step(carry: Array, sliver: Array) -> Tuple[Array, Array]:
