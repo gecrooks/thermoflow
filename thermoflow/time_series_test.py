@@ -169,7 +169,7 @@ def test_kirkwood_tensor() -> None:
 
 
 def test_detect_equilibration() -> None:
-    key = jax.random.key(41)
+    key = jax.random.key(45)
 
     # Generate a time series with a long initial transient. Settles down to
     # equilibrium by about t=1300
