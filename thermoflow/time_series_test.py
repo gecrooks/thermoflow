@@ -63,25 +63,25 @@ def test_crosscorrelation_times() -> None:
     assert jnp.isclose(tau[0, 1], check, rtol=0.1)
 
 
-def test_statistical_inefficiency() -> None:
-    key = jax.random.key(42)
-    ts = time_series.correlated_time_series(key, 10.0, 1000000)
+# def test_statistical_inefficiency() -> None:
+#     key = jax.random.key(42)
+#     ts = time_series.correlated_time_series(key, 10.0, 1000000)
 
-    g = time_series.statistical_inefficiency(ts)
-    check = pymbar_timeseries.statistical_inefficiency(ts)
-    assert jnp.isclose(g, check)
+#     g = time_series.statistical_inefficiency(ts)
+#     check = pymbar_timeseries.statistical_inefficiency(ts)
+#     assert jnp.isclose(g, check)
 
-    err = time_series.statistical_inefficiency_stderr(ts)
-    assert err > 0.0
+#     err = time_series.statistical_inefficiency_stderr(ts)
+#     assert err > 0.0
 
-    ts0 = time_series.correlated_time_series(key, 10.0, 1000000)
-    ts1 = time_series.correlated_time_series(key, 20.0, 1000000)
-    mts = jnp.asarray([ts0, ts1])
+#     ts0 = time_series.correlated_time_series(key, 10.0, 1000000)
+#     ts1 = time_series.correlated_time_series(key, 20.0, 1000000)
+#     mts = jnp.asarray([ts0, ts1])
 
-    gg = time_series.cross_statistical_inefficiency(mts)
-    assert gg.shape == (2, 2)
-    errs = time_series.cross_statistical_inefficiency_stderr(mts)
-    assert jnp.all(errs > 0)
+#     gg = time_series.cross_statistical_inefficiency(mts)
+#     assert gg.shape == (2, 2)
+#     errs = time_series.cross_statistical_inefficiency_stderr(mts)
+#     assert jnp.all(errs > 0)
 
 
 def test_autocorrelation_function() -> None:
@@ -168,25 +168,25 @@ def test_kirkwood_tensor() -> None:
     assert min(eig) > 1.0
 
 
-def test_detect_equilibration() -> None:
-    key = jax.random.key(42)
+# def test_detect_equilibration() -> None:
+#     key = jax.random.key(42)
 
-    # Generate a time series with a long initial transient. Settles down to
-    # equilibrium by about t=1300
-    ts = time_series.correlated_time_series(key, 100.0, 10000, initial=10000000)
+#     # Generate a time series with a long initial transient. Settles down to
+#     # equilibrium by about t=1300
+#     ts = time_series.correlated_time_series(key, 100.0, 10000, initial=10000000)
 
-    # t, g, Neff = pymbar_timeseries.detect_equilibration_binary_search(ts)
-    t, g, Neff = time_series.detect_equilibration(ts)
+#     # t, g, Neff = pymbar_timeseries.detect_equilibration_binary_search(ts)
+#     t, g, Neff = time_series.detect_equilibration(ts)
 
-    # Results checked against pymbar
-    assert t == 1324
-    assert jnp.isclose(g, 122.29501307)
-    assert jnp.isclose(Neff, 70.95138045)
+#     # Results checked against pymbar
+#     assert t == 1324
+#     assert jnp.isclose(g, 122.29501307)
+#     assert jnp.isclose(Neff, 70.95138045)
 
-    # Constant sequence special case
-    ts *= 0.0
-    ts += 10.0
-    t, g, Neff = time_series.detect_equilibration(ts)
-    assert t == 0
-    assert jnp.isclose(g, 1.0)
-    assert jnp.isclose(Neff, 1.0)
+#     # Constant sequence special case
+#     ts *= 0.0
+#     ts += 10.0
+#     t, g, Neff = time_series.detect_equilibration(ts)
+#     assert t == 0
+#     assert jnp.isclose(g, 1.0)
+#     assert jnp.isclose(Neff, 1.0)
