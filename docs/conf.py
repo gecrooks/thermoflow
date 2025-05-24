@@ -76,5 +76,5 @@ html_theme = "guzzle_sphinx_theme"
 html_static_path = ["_static"]
 
 
-autodoc_typehints = ["description"]
-autodoc_member_order = ["bysource"]
+autodoc_typehints = "description"
+autodoc_member_order = "bysource"
