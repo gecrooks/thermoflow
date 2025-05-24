@@ -21,12 +21,12 @@ Free Energy Estimates
 
 
 Free Energy Estimates for symmetric protocols
---------------------------------------------
+---------------------------------------------
 .. autofunction:: thermoflow.free_energy_symmetric_bar
 
 .. autofunction:: thermoflow.free_energy_symmetric_bidirectional
 
-.. autofunction:: thermoflow.free_energy_symmetric_nnznm"
+.. autofunction:: thermoflow.free_energy_symmetric_nnznm
 
 
 """
